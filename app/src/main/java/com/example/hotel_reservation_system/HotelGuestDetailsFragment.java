@@ -48,6 +48,7 @@ public class HotelGuestDetailsFragment extends Fragment {
     RecyclerView recyclerView;
     LinearLayoutManager llm;
     Button submitButton;
+    int guestNumber;
     String gender,guestName,hotelName,hotelPrice,hotelAvailability,check_in_date,check_out_date;
 
     SharedPreferences sharedPreferences;
@@ -89,31 +90,19 @@ public class HotelGuestDetailsFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
+                System.out.println("printing " +guestNumber);
                 sharedPreferences = getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
                 recyclerView = view.findViewById(R.id.guest_details_list_recyclerView);
                 JSONArray array = new JSONArray();
 
-                for(int i = 0; i< guestCount; i++){
+                for(int i = 0; i< guestNumber; i++){
+                    System.out.println("i am here insisde guest");
                     guestNameEditText = view.findViewById(R.id.guest_name_edit_text_view);
                     guestName = guestNameEditText.getText().toString();
-                    genderMale = view.findViewById(R.id.radio_male);
-                    genderFemale = view.findViewById(R.id.radio_female);
-                    genderMale.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            gender = "male";
-                            System.out.println("mallllllllllllll");
-                        }
-                    });
-                    genderFemale.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            System.out.println("hhhhhhhhhhhhhhhhhh");
-                            gender = "female";
-                        }
-                    });
+
                     jsonObj = new JSONObject();
                     try {
+                        System.out.println("gerrrrrrrrrrrr"+gender);
                         gender = "male";
                         jsonObj.put("guest_name",guestName);
                         jsonObj.put("gender",gender);
@@ -169,7 +158,7 @@ public class HotelGuestDetailsFragment extends Fragment {
     private void setupRecyclerView() {
         //progressBar.setVisibility(View.GONE);
         sharedPreferences = getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
-        int guestNumber = 0;
+        //int guestNumber = 0;
         if (sharedPreferences.contains(guestsCount)) {
             guestNumber= Integer.parseInt(sharedPreferences.getString(guestsCount, ""));
         }

@@ -57,6 +57,20 @@ public class HotelGuestListAdapter extends RecyclerView.Adapter<HotelGuestListAd
             guestNameEditText = itemView.findViewById(R.id.guest_name_edit_text_view);
             genderMale = itemView.findViewById(R.id.radio_male);
             genderFemale = itemView.findViewById(R.id.radio_female);
+
+            genderMale.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gender = "male";
+                }
+            });
+            genderFemale.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gender = "female";
+                }
+            });
+
         }
     }
 
