@@ -79,6 +79,7 @@ public class HotelSearchFragment extends Fragment {
                 checkOutDate = getDateFromCalendar(checkOutDatePicker);
                 //Get input of guests count
                 numberOfGuests = guestsCountEditText.getText().toString();
+                System.out.println("Number"+numberOfGuests);
                 guestName = nameEditText.getText().toString();
 
 
@@ -104,6 +105,12 @@ public class HotelSearchFragment extends Fragment {
                 checkOutDate = getDateFromCalendar(checkOutDatePicker);
                 //Get input of guests count
                 numberOfGuests = guestsCountEditText.getText().toString();
+
+                sharedPreferences = getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(name, guestName);
+                editor.putString(guestsCount, numberOfGuests);
+                editor.commit();
 
                 Bundle bundle = new Bundle();
                 bundle.putString("check in date", checkInDate);
