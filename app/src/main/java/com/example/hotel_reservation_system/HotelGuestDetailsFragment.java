@@ -90,19 +90,16 @@ public class HotelGuestDetailsFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                System.out.println("printing " +guestNumber);
                 sharedPreferences = getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
                 recyclerView = view.findViewById(R.id.guest_details_list_recyclerView);
                 JSONArray array = new JSONArray();
 
                 for(int i = 0; i< guestNumber; i++){
-                    System.out.println("i am here insisde guest");
                     guestNameEditText = view.findViewById(R.id.guest_name_edit_text_view);
                     guestName = guestNameEditText.getText().toString();
 
                     jsonObj = new JSONObject();
                     try {
-                        System.out.println("gerrrrrrrrrrrr"+gender);
                         gender = "male";
                         jsonObj.put("guest_name",guestName);
                         jsonObj.put("gender",gender);
@@ -111,13 +108,15 @@ public class HotelGuestDetailsFragment extends Fragment {
                     }
 
                     array.put(jsonObj);
+
                     }
+                System.out.println(array);
                 jsonObj = new JSONObject();
                 try {
                     jsonObj.put("hotel_name",hotelName);
-                    jsonObj.put("check_in_date",check_in_date);
-                    jsonObj.put("check_out_date",check_out_date);
-                    jsonObj.put("guests_list",array);
+                    jsonObj.put("check_in_date",check_in_date.toString());
+                    jsonObj.put("check_out_date",check_out_date.toString());
+                    jsonObj.put("guest_list",array);
                     in = new TypedByteArray("application/json", jsonObj.toString().getBytes("UTF-8"));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -126,43 +125,43 @@ public class HotelGuestDetailsFragment extends Fragment {
                 {
                     e.printStackTrace();
                 }
-                if (f==0) {
-                    Api.getClient().reserveHotel(in, new Callback<HotelConfirmationData>() {
+                System.out.println(jsonObj);
+                Api.getClient().reserveHotel(in, new Callback<HotelConfirmationData>() {
+                    @Override
+                    public void success(HotelConfirmationData confirmationData, Response response) {
+                        //HotelConfirmationData hotelConfirmationData = new HotelConfirmationData();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("reservation number",confirmationData.getReservationNumber());
+                        HotelConfirmationFragment confirmationFragment=new HotelConfirmationFragment();
+                        confirmationFragment.setArguments(bundle);
 
-                        @Override
-                        public void success(HotelConfirmationData confirmationNumber, Response response) {
-                            Bundle bundle = new Bundle();
-                            bundle.putString("reservation number", confirmationNumber.getReservationNumber());
-                            HotelConfirmationFragment confirmationFragment=new HotelConfirmationFragment();
-                            confirmationFragment.setArguments(bundle);
+                        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.main_layout, confirmationFragment);
+                        fragmentTransaction.remove(HotelGuestDetailsFragment.this);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    }
 
-                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                            fragmentTransaction.replace(R.id.main_layout, confirmationFragment);
-                            fragmentTransaction.remove(HotelGuestDetailsFragment.this);
-                            fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            // if error occurs in network transaction then we can get the error in this method.
-                            Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-
-                }
+                    @Override
+                    public void failure(RetrofitError error) {
+                        System.out.println("faliure");
+                        System.out.println(error.toString());
+                        // if error occurs in network transaction then we can get the error in this method.
+                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
-
     }
     private void setupRecyclerView() {
         //progressBar.setVisibility(View.GONE);
         sharedPreferences = getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
-        //int guestNumber = 0;
         if (sharedPreferences.contains(guestsCount)) {
             guestNumber= Integer.parseInt(sharedPreferences.getString(guestsCount, ""));
         }
-        System.out.println("GuestCount" +guestNumber);
+        System.out.println("Guest   " +guestNumber);
+        //guestNumber = guest;
+        System.out.println("GuestCount " +guestNumber);
         RecyclerView recyclerView = view.findViewById(R.id.guest_details_list_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         HotelGuestListAdapter guestListAdapter=new HotelGuestListAdapter(getActivity(),guestNumber);

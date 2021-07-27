@@ -42,7 +42,7 @@ public class HotelConfirmationFragment extends Fragment {
 
         String reservationNumber = getArguments().getString("reservation number");
         TextView cNumber = view.findViewById(R.id.confirmation_text_view);
-        cNumber.setText("thank you for your reservation, Your Confirmation Number is: "+reservationNumber);
+        cNumber.setText("Thank you for your reservation, Your Confirmation Number is: "+reservationNumber);
 
     }
 }
